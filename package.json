@@ -1,0 +1,20 @@
+{
+  "name": "tictactoe-online",
+  "version": "1.0.0",
+  "description": "",
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "dev": "concurrently -c \"auto\" --n \"Node,Vite\" \"npm run dev -w backend\" \"npm run dev -w frontend\""
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@commitlint/cli": "^17.6.3",
+    "@commitlint/config-conventional": "^17.6.3",
+    "concurrently": "^8.0.1",
+    "husky": "^8.0.3"
+  }
+}
