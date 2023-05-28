@@ -1,21 +1,19 @@
-var express = require('express');
-var http = require('http');
-const { WebSocketServer } = require('ws');
+const express = require("express");
+const http = require("http");
+const { WebSocketServer } = require("ws");
 
-var app = express();
-var server = http.createServer(app);
+const app = express();
+const server = http.createServer(app);
 
 const ws = new WebSocketServer({ server });
 
-ws.on('connection', (ws) => {
-  ws.on('error', console.error);
+ws.on("error", console.error);
 
-  ws.on('message', function message(data) {
-    console.log('received: %s', data);
-  });
-
-  ws.send('something');
+ws.on("message", (data) => {
+  console.log("received: %s", data);
 });
 
-var port = process.env.PORT || 3000;
+ws.send("something");
+
+const port = process.env.PORT || 3000;
 server.listen(port);
