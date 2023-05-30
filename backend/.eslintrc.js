@@ -3,12 +3,19 @@ module.exports = {
     es2021: true,
     node: true,
   },
-  extends: ["standard-with-typescript", "plugin:prettier/recommended"],
+  extends: [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    "prettier",
+  ],
   overrides: [],
+  parser: "@typescript-eslint/parser",
   parserOptions: {
     ecmaVersion: "latest",
-    sourceType: "module",
-    project: "./tsconfig.json",
+    project: true,
+    tsconfigRootDir: __dirname,
   },
+  plugins: ["@typescript-eslint"],
   rules: {},
 };
