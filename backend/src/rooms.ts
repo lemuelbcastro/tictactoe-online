@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 
-import { Room } from "./types";
+import { Game, Room } from "./types";
 
 export const rooms = new Map<string, Room>();
 
@@ -13,7 +13,13 @@ export const createRoom = (playerId: string): Room => {
   }
 
   const roomId = uuidv4();
-  const room = { roomId, players: [playerId] };
+  const room: Room = {
+    roomId,
+    host: playerId,
+    players: [playerId],
+    started: false,
+    ended: false,
+  };
 
   rooms.set(roomId, room);
 
@@ -32,6 +38,8 @@ export const joinRoom = (roomId: string, playerId: string) => {
   }
 
   rooms.set(roomId, { ...room, players: [...room.players, playerId] });
+
+  return rooms.get(roomId);
 };
 
 export const leaveRoom = (roomId: string, playerId: string) => {
@@ -54,4 +62,27 @@ export const leaveRoom = (roomId: string, playerId: string) => {
   const players = room.players.filter((player) => player !== playerId);
 
   rooms.set(roomId, { ...room, players });
+
+  return rooms.get(roomId);
+};
+
+export const startRoom = (roomId: string, playerId: string) => {
+  const room = rooms.get(roomId);
+
+  if (!room) {
+    throw Error("Room does not exist");
+  }
+
+  if (room.host !== playerId) {
+    throw Error("Room can only be started by the host");
+  }
+
+  const game: Game = {
+    board: Array<string | null>(9).fill(null),
+    turn: "X",
+  };
+
+  rooms.set(roomId, { ...room, game, started: true });
+
+  return rooms.get(roomId);
 };

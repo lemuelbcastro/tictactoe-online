@@ -8,9 +8,10 @@ import {
   handleLeave,
   handleDisconnect,
   players,
+  handleStart,
 } from "./handlers";
 
-export const createGameServer = (wss: Server<WebSocket>) => {
+export const createManager = (wss: Server<WebSocket>) => {
   wss.on("error", console.error);
 
   wss.on("connection", (ws, req) => {
@@ -18,8 +19,9 @@ export const createGameServer = (wss: Server<WebSocket>) => {
     const playerId = query.playerId as string;
 
     if (!playerId || players.has(playerId)) {
-      ws.send(JSON.stringify({ error: "Player already connected" }), () =>
-        ws.close()
+      ws.send(
+        JSON.stringify({ type: "error", message: "Player already connected" }),
+        () => ws.close()
       );
     }
 
@@ -42,13 +44,16 @@ export const createGameServer = (wss: Server<WebSocket>) => {
           case "leave":
             handleLeave(roomId, playerId);
             break;
+          case "start":
+            handleStart(roomId, playerId);
+            break;
 
           default:
             break;
         }
       } catch (error) {
         if (error instanceof Error) {
-          ws.send(JSON.stringify({ error: error.message }));
+          ws.send(JSON.stringify({ type: "error", message: error.message }));
         }
       }
     });
