@@ -1,10 +1,9 @@
-export type Payload = {
+export type Message = {
   type: string;
-  params: {
-    roomId: string;
-    boardIndex: number;
-  };
+  payload: Payload;
 };
+
+export type Payload = { roomId: string; boardIndex?: number };
 
 export type Room = {
   roomId: string;

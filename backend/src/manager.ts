@@ -1,7 +1,7 @@
 import { parse } from "url";
 import { Server, WebSocket } from "ws";
 
-import { Payload } from "./types";
+import { Message } from "./types";
 import {
   handleCreate,
   handleJoin,
@@ -11,6 +11,8 @@ import {
   handleStart,
   handleMove,
 } from "./handlers";
+import { messageSchema } from "./schemas";
+import { CREATE, JOIN, LEAVE, MOVE, START } from "./constants";
 
 export const createManager = (wss: Server<WebSocket>) => {
   wss.on("error", console.error);
@@ -30,23 +32,27 @@ export const createManager = (wss: Server<WebSocket>) => {
 
     ws.on("message", (data: string) => {
       try {
-        const { type, params } = JSON.parse(data) as Payload;
+        const message = JSON.parse(data) as Message;
+
+        messageSchema.validateSync(message);
+
+        const { type, payload } = message;
 
         switch (type) {
-          case "create":
+          case CREATE:
             handleCreate(playerId);
             break;
-          case "join":
-            handleJoin(params.roomId, playerId);
+          case JOIN:
+            handleJoin(payload.roomId, playerId);
             break;
-          case "leave":
-            handleLeave(params.roomId, playerId);
+          case LEAVE:
+            handleLeave(payload.roomId, playerId);
             break;
-          case "start":
-            handleStart(params.roomId, playerId);
+          case START:
+            handleStart(payload.roomId, playerId);
             break;
-          case "move":
-            handleMove(params.roomId, playerId, params.boardIndex);
+          case MOVE:
+            handleMove(payload.roomId, playerId, payload.boardIndex!);
             break;
 
           default:
