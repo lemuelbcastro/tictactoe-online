@@ -7,8 +7,9 @@ import {
   handleJoin,
   handleLeave,
   handleDisconnect,
-  players,
+  clients,
   handleStart,
+  handleMove,
 } from "./handlers";
 
 export const createManager = (wss: Server<WebSocket>) => {
@@ -18,40 +19,41 @@ export const createManager = (wss: Server<WebSocket>) => {
     const { query } = parse(req.url!, true);
     const playerId = query.playerId as string;
 
-    if (!playerId || players.has(playerId)) {
+    if (!playerId || clients.has(playerId)) {
       ws.send(
         JSON.stringify({ type: "error", message: "Player already connected" }),
         () => ws.close()
       );
     }
 
-    players.set(playerId, ws);
+    clients.set(playerId, ws);
 
     ws.on("message", (data: string) => {
       try {
-        const {
-          type,
-          params: { roomId },
-        } = JSON.parse(data) as Payload;
+        const { type, params } = JSON.parse(data) as Payload;
 
         switch (type) {
           case "create":
             handleCreate(playerId);
             break;
           case "join":
-            handleJoin(roomId, playerId);
+            handleJoin(params.roomId, playerId);
             break;
           case "leave":
-            handleLeave(roomId, playerId);
+            handleLeave(params.roomId, playerId);
             break;
           case "start":
-            handleStart(roomId, playerId);
+            handleStart(params.roomId, playerId);
+            break;
+          case "move":
+            handleMove(params.roomId, playerId, params.boardIndex);
             break;
 
           default:
             break;
         }
       } catch (error) {
+        console.error(error);
         if (error instanceof Error) {
           ws.send(JSON.stringify({ type: "error", message: error.message }));
         }
