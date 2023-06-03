@@ -52,8 +52,6 @@ export const joinRoom = (roomId: string, playerId: string) => {
 
   room.clients = [...room.clients, playerId];
 
-  rooms.set(roomId, room);
-
   return room;
 };
 
@@ -72,13 +70,15 @@ export const leaveRoom = (roomId: string, playerId: string) => {
 
   room.clients = room.clients.filter((player) => player !== playerId);
 
-  rooms.set(roomId, room);
-
   return room;
 };
 
 export const startRoom = (roomId: string, playerId: string) => {
   const room = getRoom(roomId);
+
+  if (room.started) {
+    throw Error("Room was already started");
+  }
 
   if (room.host !== playerId) {
     throw Error("Room can only be started by the host");
@@ -100,8 +100,6 @@ export const startRoom = (roomId: string, playerId: string) => {
     },
     turn: "X",
   };
-
-  rooms.set(roomId, room);
 
   return room;
 };
