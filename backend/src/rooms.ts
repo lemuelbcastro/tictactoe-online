@@ -80,6 +80,24 @@ export const startRoom = (roomId: string, playerId: string) => {
     throw Error("Room was already started");
   }
 
+  initializeRoom(room, playerId);
+
+  return room;
+};
+
+export const restartRoom = (roomId: string, playerId: string) => {
+  const room = getRoom(roomId);
+
+  if (!room.ended) {
+    throw Error("Room was has not yet ended");
+  }
+
+  initializeRoom(room, playerId);
+
+  return room;
+};
+
+const initializeRoom = (room: Room, playerId: string) => {
   if (room.host !== playerId) {
     throw Error("Room can only be started by the host");
   }
@@ -100,6 +118,4 @@ export const startRoom = (roomId: string, playerId: string) => {
     },
     turn: "X",
   };
-
-  return room;
 };

@@ -5,6 +5,7 @@ import {
   getRoom,
   joinRoom,
   leaveRoom,
+  restartRoom,
   rooms,
   startRoom,
 } from "./rooms";
@@ -119,4 +120,14 @@ export const handleMove = (
   }
 
   game.turn = game.turn === "X" ? "O" : "X";
+};
+
+export const handleRestart = (roomId: string, playerId: string) => {
+  const room = restartRoom(roomId, playerId);
+
+  broadcastMessage(roomId, {
+    type: "started",
+    message: `Room ${roomId} started`,
+    room,
+  });
 };

@@ -24,5 +24,6 @@ export const MAX_PLAYERS = 2;
 export const CREATE = "create";
 export const JOIN = "join";
 export const LEAVE = "leave";
-export const START = "start";
 export const MOVE = "move";
+export const START = "start";
+export const RESTART = "restart";
