@@ -2,14 +2,14 @@ import { v4 as uuidv4 } from "uuid";
 
 import { Room } from "./types";
 
-const rooms = new Map<string, Room>();
+export const rooms = new Map<string, Room>();
 
 export const playerExists = (playerId: string) =>
   Array.from(rooms).some(([, { players }]) => players.includes(playerId));
 
 export const createRoom = (playerId: string): Room => {
   if (playerExists(playerId)) {
-    throw Error("Player already exists");
+    throw Error("Player already in a room");
   }
 
   const roomId = uuidv4();
@@ -28,7 +28,7 @@ export const joinRoom = (roomId: string, playerId: string) => {
   }
 
   if (playerExists(playerId)) {
-    throw Error("Player already exists");
+    throw Error("Player already in a room");
   }
 
   rooms.set(roomId, { ...room, players: [...room.players, playerId] });
@@ -54,12 +54,4 @@ export const leaveRoom = (roomId: string, playerId: string) => {
   const players = room.players.filter((player) => player !== playerId);
 
   rooms.set(roomId, { ...room, players });
-};
-
-export const leaveAllRooms = (playerId: string) => {
-  rooms.forEach(({ roomId, players }) => {
-    if (players.includes(playerId)) {
-      leaveRoom(roomId, playerId);
-    }
-  });
 };
