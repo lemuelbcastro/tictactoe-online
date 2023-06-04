@@ -122,6 +122,7 @@ const start = (room: Room, playerId: string) => {
   const random = Math.random() < 0.5;
   const [first, second] = room.clients;
 
+  room.ended = false;
   room.started = true;
   room.game = {
     board: Array(9).fill(null) as Board,
