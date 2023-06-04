@@ -58,12 +58,20 @@ export const handleLeave = (roomId: string, playerId: string) => {
 };
 
 export const handleDisconnect = (playerId: string) => {
-  rooms.forEach(({ roomId, clients: players }) => {
-    if (players.includes(playerId)) {
-      handleLeave(roomId, playerId);
+  for (const [roomId, { clients }] of rooms) {
+    if (clients.includes(playerId)) {
+      const room = leaveRoom(roomId, playerId);
+
+      broadcastMessage(roomId, {
+        type: "disconnected",
+        message: `Player ${playerId} disconnected from ${room.roomId}`,
+        playerId,
+        room,
+      });
+
+      return;
     }
-  });
-  clients.delete(playerId);
+  }
 };
 
 export const handleReconnect = (roomId: string, playerId: string) => {

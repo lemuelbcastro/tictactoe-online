@@ -29,12 +29,20 @@ export const createManager = (wss: Server<WebSocket>) => {
 
   wss.on("connection", (ws, req) => {
     const { query } = parse(req.url!, true);
-    const playerId = query.playerId as string;
+    let playerId = query.playerId as string;
 
-    if (!playerId || clients.has(playerId)) {
+    if (!playerId) {
+      ws.send(
+        JSON.stringify({ type: "error", message: "Player ID not provided" }),
+        () => ws.close(1003)
+      );
+    }
+
+    if (clients.has(playerId)) {
+      playerId = "";
       ws.send(
         JSON.stringify({ type: "error", message: "Player already connected" }),
-        () => ws.close()
+        () => ws.close(1003)
       );
     }
 
@@ -85,6 +93,7 @@ export const createManager = (wss: Server<WebSocket>) => {
     ws.on("close", () => {
       if (playerId) {
         handleDisconnect(playerId);
+        clients.delete(playerId);
       }
     });
   });
