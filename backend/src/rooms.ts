@@ -20,6 +20,7 @@ export const createRoom = (playerId: string): Room => {
     roomId,
     host: playerId,
     clients: [playerId],
+    ready: false,
     started: false,
     ended: false,
   };
@@ -61,6 +62,7 @@ export const leaveRoom = (roomId: string, playerId: string) => {
   }
 
   room.clients = room.clients.filter((player) => player !== playerId);
+  room.ready = room.clients.length === MAX_PLAYERS;
 
   return room;
 };
@@ -144,4 +146,5 @@ const join = (room: Room, playerId: string) => {
   }
 
   room.clients = [...room.clients, playerId];
+  room.ready = room.clients.length === MAX_PLAYERS;
 };

@@ -9,6 +9,7 @@ export type Room = {
   roomId: string;
   host: string;
   clients: string[];
+  ready: boolean;
   started: boolean;
   ended: boolean;
   game?: Game;
