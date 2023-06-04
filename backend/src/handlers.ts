@@ -31,7 +31,9 @@ export const handleCreate = (playerId: string) => {
   broadcastMessage(room.roomId, {
     type: "created",
     message: `Room ${room.roomId} created by player ${playerId}`,
-    room,
+    payload: {
+      room,
+    },
   });
 };
 
@@ -41,8 +43,10 @@ export const handleJoin = (roomId: string, playerId: string) => {
   broadcastMessage(roomId, {
     type: "joined",
     message: `Player ${playerId} joined ${room.roomId}`,
-    playerId,
-    room,
+    payload: {
+      playerId,
+      room,
+    },
   });
 };
 
@@ -52,8 +56,10 @@ export const handleLeave = (roomId: string, playerId: string) => {
   broadcastMessage(roomId, {
     type: "left",
     message: `Player ${playerId} left ${room.roomId}`,
-    playerId,
-    room,
+    payload: {
+      playerId,
+      room,
+    },
   });
 };
 
@@ -65,8 +71,10 @@ export const handleDisconnect = (playerId: string) => {
       broadcastMessage(roomId, {
         type: "disconnected",
         message: `Player ${playerId} disconnected from ${room.roomId}`,
-        playerId,
-        room,
+        payload: {
+          playerId,
+          room,
+        },
       });
 
       return;
@@ -80,8 +88,10 @@ export const handleReconnect = (roomId: string, playerId: string) => {
   broadcastMessage(roomId, {
     type: "reconnected",
     message: `Player ${playerId} reconnected to ${room.roomId}`,
-    playerId,
-    room,
+    payload: {
+      playerId,
+      room,
+    },
   });
 };
 
@@ -91,7 +101,9 @@ export const handleStart = (roomId: string, playerId: string) => {
   broadcastMessage(roomId, {
     type: "started",
     message: `Room ${roomId} started`,
-    room,
+    payload: {
+      room,
+    },
   });
 };
 
@@ -120,9 +132,12 @@ export const handleMove = (
 
   broadcastMessage(roomId, {
     type: "moved",
-    playerId,
-    boardIndex,
-    room,
+    message: `${playerId} made a move in ${roomId}`,
+    payload: {
+      boardIndex,
+      playerId,
+      room,
+    },
   });
 
   const winner = checkWin(board, game.turn);
@@ -133,7 +148,10 @@ export const handleMove = (
 
     broadcastMessage(roomId, {
       type: "won",
-      room,
+      message: `${playerId} won in ${roomId}`,
+      payload: {
+        room,
+      },
     });
 
     return;
@@ -146,8 +164,10 @@ export const handleRestart = (roomId: string, playerId: string) => {
   const room = restartRoom(roomId, playerId);
 
   broadcastMessage(roomId, {
-    type: "started",
-    message: `Room ${roomId} started`,
-    room,
+    type: "restarted",
+    message: `Room ${roomId} restarted`,
+    payload: {
+      room,
+    },
   });
 };
