@@ -158,6 +158,14 @@ export const handleMove = (
   }
 
   game.turn = game.turn === "X" ? "O" : "X";
+
+  broadcastMessage(roomId, {
+    type: "changed-turn",
+    message: `Turn changed to ${game.turn} in ${roomId}`,
+    payload: {
+      room,
+    },
+  });
 };
 
 export const handleRestart = (roomId: string, playerId: string) => {
