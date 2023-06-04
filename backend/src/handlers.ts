@@ -5,6 +5,7 @@ import {
   getRoom,
   joinRoom,
   leaveRoom,
+  reconnectRoom,
   restartRoom,
   rooms,
   startRoom,
@@ -63,6 +64,17 @@ export const handleDisconnect = (playerId: string) => {
     }
   });
   clients.delete(playerId);
+};
+
+export const handleReconnect = (roomId: string, playerId: string) => {
+  const room = reconnectRoom(roomId, playerId);
+
+  broadcastMessage(roomId, {
+    type: "reconnected",
+    message: `Player ${playerId} reconnected to ${room.roomId}`,
+    playerId,
+    room,
+  });
 };
 
 export const handleStart = (roomId: string, playerId: string) => {

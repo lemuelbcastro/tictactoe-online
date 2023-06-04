@@ -11,9 +11,18 @@ import {
   handleStart,
   handleMove,
   handleRestart,
+  handleReconnect,
 } from "./handlers";
 import { messageSchema } from "./schemas";
-import { CREATE, JOIN, LEAVE, MOVE, RESTART, START } from "./constants";
+import {
+  CREATE,
+  JOIN,
+  LEAVE,
+  MOVE,
+  RECONNECT,
+  RESTART,
+  START,
+} from "./constants";
 
 export const createManager = (wss: Server<WebSocket>) => {
   wss.on("error", console.error);
@@ -51,6 +60,9 @@ export const createManager = (wss: Server<WebSocket>) => {
             break;
           case MOVE:
             handleMove(payload.roomId, playerId, payload.boardIndex!);
+            break;
+          case RECONNECT:
+            handleReconnect(payload.roomId, playerId);
             break;
           case RESTART:
             handleRestart(payload.roomId, playerId);

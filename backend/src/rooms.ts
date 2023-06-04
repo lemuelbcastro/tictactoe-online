@@ -42,15 +42,7 @@ export const getRoom = (roomId: string) => {
 export const joinRoom = (roomId: string, playerId: string) => {
   const room = getRoom(roomId);
 
-  if (playerExists(playerId)) {
-    throw Error("Player already in a room");
-  }
-
-  if (room.clients.length === MAX_PLAYERS) {
-    throw Error("Room already full");
-  }
-
-  room.clients = [...room.clients, playerId];
+  join(room, playerId);
 
   return room;
 };
@@ -80,7 +72,7 @@ export const startRoom = (roomId: string, playerId: string) => {
     throw Error("Room was already started");
   }
 
-  initializeRoom(room, playerId);
+  start(room, playerId);
 
   return room;
 };
@@ -92,12 +84,33 @@ export const restartRoom = (roomId: string, playerId: string) => {
     throw Error("Room was has not yet ended");
   }
 
-  initializeRoom(room, playerId);
+  start(room, playerId);
 
   return room;
 };
 
-const initializeRoom = (room: Room, playerId: string) => {
+export const reconnectRoom = (roomId: string, playerId: string) => {
+  const room = getRoom(roomId);
+  const { started, clients, game } = room;
+
+  if (!game || !started) {
+    throw Error("Room was has not yet started");
+  }
+
+  if (clients.includes(playerId)) {
+    throw Error("Player already in the room");
+  }
+
+  if (!Object.values(game.players).includes(playerId)) {
+    throw Error("Player not in the game");
+  }
+
+  join(room, playerId);
+
+  return room;
+};
+
+const start = (room: Room, playerId: string) => {
   if (room.host !== playerId) {
     throw Error("Room can only be started by the host");
   }
@@ -118,4 +131,16 @@ const initializeRoom = (room: Room, playerId: string) => {
     },
     turn: "X",
   };
+};
+
+const join = (room: Room, playerId: string) => {
+  if (playerExists(playerId)) {
+    throw Error("Player already in a room");
+  }
+
+  if (room.clients.length === MAX_PLAYERS) {
+    throw Error("Room already full");
+  }
+
+  room.clients = [...room.clients, playerId];
 };

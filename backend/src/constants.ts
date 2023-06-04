@@ -26,4 +26,5 @@ export const JOIN = "join";
 export const LEAVE = "leave";
 export const MOVE = "move";
 export const START = "start";
+export const RECONNECT = "reconnect";
 export const RESTART = "restart";
