@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from "uuid";
+import { randomBytes } from "crypto";
 
 import { Board, Room } from "./types";
 import { MAX_PLAYERS } from "./constants";
@@ -15,7 +15,7 @@ export const createRoom = (playerId: string): Room => {
     throw Error("Player already in a room");
   }
 
-  const roomId = uuidv4();
+  const roomId = randomBytes(4).toString("hex");
   const room: Room = {
     roomId,
     host: playerId,
