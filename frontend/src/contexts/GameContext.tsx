@@ -4,6 +4,7 @@ import { Message, Room } from "../types";
 type GameState = {
   room: Room;
   screen: "menu" | "room" | "game";
+  error?: { message: string };
 };
 
 export const GameStateContext = createContext<GameState | null>(null);
@@ -30,8 +31,9 @@ export const GameStateProvider = ({
 
 const gameReducer = (
   state: GameState,
-  { type, payload }: Message
+  { type, payload, message }: Message
 ): GameState => {
+  console.log("a");
   switch (type) {
     case "created":
       return { screen: "room", room: payload.room };
@@ -47,6 +49,8 @@ const gameReducer = (
       return { ...state, room: payload.room };
     case "restarted":
       return { screen: "game", room: payload.room };
+    case "error":
+      return { ...state, error: { message } };
     default:
       return state;
   }

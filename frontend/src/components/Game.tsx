@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import useGameState, { useGameStateDispatch } from "../hooks/useGameState";
 import useWebsocket from "../hooks/useWebSocket";
@@ -35,8 +35,14 @@ function Game() {
   };
 
   const { connect, sendMessage } = useWebsocket({ onOpen, onClose, onMessage });
-  const { room, screen } = useGameState();
+  const { room, screen, error } = useGameState();
   const dispatch = useGameStateDispatch();
+
+  useEffect(() => {
+    if (error) {
+      alert(error.message);
+    }
+  }, [error]);
 
   const handleConnect = () => {
     connect(`ws://172.26.192.196:3000?playerId=${playerId}`);
